@@ -83,7 +83,7 @@ def getSample(text):
     lines = text.split('\n')
     result = []
     for line in lines:
-        if line is not '':
+        if line != '':
             row = line.split(',')
             result.append(row)
     return result

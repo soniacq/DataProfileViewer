@@ -1,11 +1,7 @@
 import pkg_resources
 import string
-import numpy as np
-from dateutil.parser import parse
 import json
-import networkx as nx
 from ._comm_api import setup_comm_api
-from collections import defaultdict
 import copy
 import random
 import datamart_profiler
@@ -38,61 +34,61 @@ def id_generator(size=15):
     """Helper function to generate random div ids. This is useful for embedding
     HTML into ipython notebooks."""
     chars = list(string.ascii_uppercase)
-    return ''.join(np.random.choice(chars, size, replace=True))
+    return ''.join(random.choices(chars, k=size))
 
 
 def make_html(data_dict, id):
-	lib_path = pkg_resources.resource_filename(__name__, "build/dataProfileVis.js")
-	bundle = open(lib_path, "r", encoding="utf8").read()
-	html_all = """
-	<html>
-	<head>
-	</head>
-	<body>
-	    <script>
-	    {bundle}
-	    </script>
-	    <div id="{id}">
-	    </div>
-	    <script>
-	        dataProfileVis.renderProfilerViewBundle("#{id}", {data_dict});
-	    </script>
-	</body>
-	</html>
-	""".format(bundle=bundle, id=id, data_dict=json.dumps(data_dict))
-	return html_all
+    lib_path = pkg_resources.resource_filename(__name__, "build/dataProfileVis.js")
+    bundle = open(lib_path, "r", encoding="utf8").read()
+    html_all = """
+    <html>
+    <head>
+    </head>
+    <body>
+        <script>
+        {bundle}
+        </script>
+        <div id="{id}">
+        </div>
+        <script>
+            dataProfileVis.renderProfilerViewBundle("#{id}", {data_dict});
+        </script>
+    </body>
+    </html>
+    """.format(bundle=bundle, id=id, data_dict=json.dumps(data_dict))
+    return html_all
 
 def edit_profiler_make_html(data_dict, id):
-	lib_path = pkg_resources.resource_filename(__name__, "build/dataProfileVis.js")
-	bundle = open(lib_path, "r", encoding="utf8").read()
-	html_all = """
-	<html>
-	<head>
-	</head>
-	<body>
-	    <script>
-	    {bundle}
-	    </script>
-	    <div id="{id}">
-	    </div>
-	    <script>
-	        dataProfileVis.renderEditProfilerViewBundle("#{id}", {data_dict});
-	    </script>
-	</body>
-	</html>
-	""".format(bundle=bundle, id=id, data_dict=json.dumps(data_dict))
-	return html_all
+    lib_path = pkg_resources.resource_filename(__name__, "build/dataProfileVis.js")
+    bundle = open(lib_path, "r", encoding="utf8").read()
+    html_all = """
+    <html>
+    <head>
+    </head>
+    <body>
+        <script>
+        {bundle}
+        </script>
+        <div id="{id}">
+        </div>
+        <script>
+            dataProfileVis.renderEditProfilerViewBundle("#{id}", {data_dict});
+        </script>
+    </body>
+    </html>
+    """.format(bundle=bundle, id=id, data_dict=json.dumps(data_dict))
+    return html_all
 
 def getSample(text):
     lines = text.split('\n')
     result = []
     for line in lines:
-        if line is not '':
+        if line != '':
             row = line.split(',')
             result.append(row)
     return result
   
-def prepare_data_profiler(metadata, enet_alpha=0.001, enet_l1=0.1):
+def prepare_data_profiler(metadata):
     metadata = copy.deepcopy(metadata)
     
     metadataJSON = {
